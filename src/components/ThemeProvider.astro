@@ -1,0 +1,12 @@
+---
+/**
+ * Dark-only theme provider.
+ * Overrides Starlight's default ThemeProvider (which reads/writes a
+ * light/dark preference) and forces the dark theme on every load,
+ * before paint, to avoid any flash.
+ */
+---
+
+<script is:inline>
+	document.documentElement.dataset.theme = 'dark';
+</script>

@@ -1,8 +1,7 @@
 ---
-icon: road
+title: Future work
+description: The roadmap for any-sync — global P2P relays, multi-provider support, and nested ACLs.
 ---
-
-# Future work
 
 The future development of `any-sync` focuses on three key directions:
 
