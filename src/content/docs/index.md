@@ -3,19 +3,19 @@ title: Overview
 description: any-sync and any-sdk provide encrypted shared state for long-lived human-agent collaboration.
 ---
 
-**`any-sync`** is a peer-to-peer protocol for building human-agent collaboration systems. It lets humans, agents, and devices work on the same end-to-end encrypted, permissioned state. No central server, orchestrator, or sync backend has to be trusted with collaboration authority.
+**any-sync** is a peer-to-peer protocol for building human-agent collaboration systems. It lets humans and agents work on the same end-to-end encrypted, permissioned state. No central server, orchestrator, or sync backend has to be trusted with collaboration authority.
 
-**`any-sdk`** is an embedded library that turns shared state into a reactive local object database. Spaces, objects, permissions, queries, subscriptions, history, and traces become primitives for agentic applications, with no application sync backend to deploy and no server round trips for local reads and writes.
+**any-sdk** is an embedded library that turns shared state into a reactive local object database. Spaces, objects, permissions, queries, subscriptions, history, and traces become primitives for agentic applications, with no application sync backend to deploy and no server round trips for local reads and writes.
 
 It is designed for long-lived work that cannot be reduced to chat messages, tool calls, or one application's database. Security audited by Cure53.
 
 ## Motivation
 
-Agent infrastructure is built around messages, tools, orchestrators, files, and backend databases. MCP gives agents access to tools, A2A lets them exchange messages, and memory is usually a markdown file on a disk or a context database over HTTP. That works for short-term tasks. Long-running collaboration depends on something else: the project, task graph, document, dataset, decisions, and traces that keep changing after any single message is gone.
+Agent systems are built around messages, tools, orchestrators, files, and databases. MCP gives agents access to tools, A2A lets them exchange messages, and memory is often stored in markdown files or remote context databases. That works for short tasks, while long-running collaboration needs a stronger shared state: the evolving project, task graph, documents, datasets, decisions, and traces.
 
-The usual memory substrates are not enough. Files and git make state durable and inspectable, but they merge text rather than structure, so agents end up parsing files that no schema checks, maintaining side indexes, and walking diffs to reconstruct what is current. A remote database gives you structure and queries, but it puts every read and write behind a server that has to be reachable, centralizes authority over the workspace, and leaves versioning, conflict detection, offline work, and merge behavior to your application code. Without that machinery, concurrent writes collapse into last-write-wins by default: when two agents touch the same record, the earlier write silently disappears.
+Today's options are incomplete. Files and git are durable and inspectable, but they are text-based, so agents must parse structure, maintain indexes, and infer current state from diffs. Databases provide structure and queries, but they leave versioning, conflicts, offline work, permissions, and merge behavior to application code. Without that, concurrent edits often become a mess.
 
-You can see the missing layer in what teams build to compensate. Markdown memory grows typed frontmatter, claims files, proposed-write inboxes, and search indexes that someone has to patch every time the files change. Database memory grows version columns, retry loops, merge workers, and audit tables. Serious setups converge on the same hand-assembled engine: typed shared state with queries, history, permissions, and rules for concurrent writes.
+So serious setups converge on the same hand-assembled engine: database with vector search, graph traversal, history, traces, permissions, and rules for concurrent writes. It's costly and hard to maintain.
 
 ## The core idea
 
@@ -23,25 +23,25 @@ The context humans and agents share should live as shared state, not as messages
 
 CRDTs let peers write independently and converge later. A signed DAG records who changed what, when, and under what authority. any-sync moves encrypted changes between peers and providers; any-sdk turns those changes into objects, queries, permissions, subscriptions, history, and traces.
 
-The result is one engine instead of five systems and the glue between them. Convergence, permissions, encryption, queries, and provenance operate over the same objects, so humans, agents, and devices can collaborate on evolving state without trusting a central backend to read the data or referee the collaboration.
+The result is one engine instead of a few systems and the glue between them. Convergence, permissions, encryption, queries, and provenance operate over the same objects, so humans and agents can collaborate on evolving state without trusting a central backend to read the data or referee the collaboration.
 
 ## Key features
 
-- **Shared human-agent workspaces**: Humans and agents work on the same objects through different interfaces.
-- **Cross-org collaboration**: Organizations collaborate without giving one party's backend ownership of the workspace.
-- **Offline handoff**: Agents can continue after disconnection, leave work in shared state, and let humans or other agents pick it up later.
-- **Generated UI backed by state**: Dashboards, forms, review flows, and agent-generated interfaces are live views over shared objects.
-- **Flexible agent-native data**: Objects can combine typed fields, free-form content, metadata, derived state, and evolving schemas.
-- **Multi-dimensional memory**: Shared objects can be materialized as graphs, tables, timelines, task queues, documents, traces, or vector indexes.
-- **Audit by construction**: Signed DAG history records provenance, permissions, and change context.
-- **Untrusted sync infrastructure**: Providers store and relay encrypted data without owning collaboration authority.
+* **Shared human-agent workspaces**: Humans and agents work on the same objects through different interfaces.
+* **Cross-org collaboration**: Organizations collaborate without giving one party's backend ownership of the workspace.
+* **Offline handoff**: Agents can continue after disconnection, leave work in shared state, and let humans or other agents pick it up later.
+* **Generated UI backed by state**: Dashboards, forms, review flows, and agent-generated interfaces are live views over shared objects.
+* **Flexible agent-native data**: Objects can combine typed fields, free-form content, metadata, derived state, and evolving schemas.
+* **Multi-dimensional memory**: Shared objects can be materialized as graphs, tables, timelines, task queues, documents, traces, or vector indexes.
+* **Audit by construction**: Signed DAG history records provenance, permissions, and change context.
+* **Untrusted sync infrastructure**: Providers store and relay encrypted data without owning collaboration authority.
 
 ## How the stack works
 
 There are two layers exposed to developers: the sync protocol and the SDK.
 
-- **any-sync**: encrypted peer-to-peer sync. It moves bytes between devices and peers through whichever provider you choose, merges concurrent changes, and maintains the signed history.
-- **any-sync SDK**: unpacks those bytes into a reactive local database and an API, so that spaces, objects, permissions, subscriptions, queries, and history become ordinary primitives for your application and your agents.
+* **any-sync**: encrypted peer-to-peer sync. It moves bytes between devices and peers through whichever provider you choose, merges concurrent changes, and maintains the signed history.
+* **any-sync SDK**: unpacks those bytes into a reactive local database and an API, so that spaces, objects, permissions, subscriptions, queries, and history become ordinary primitives for your application and your agents.
 
 ## Inside a space
 
